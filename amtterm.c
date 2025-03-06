@@ -181,6 +181,7 @@ static void usage(FILE *fp)
 	    "   -q            quiet\n"
 	    "   -L            use legacy authentication\n"
 #if defined(USE_OPENSSL) || defined(USE_GNUTLS)
+	    "   -N            Allow insecure server connections\n"
 	    "   -C cacert     enable SSL and use PEM cacert file\n"
 #endif
 	    "   -u user       username (default: admin)\n"
@@ -206,6 +207,7 @@ int main(int argc, char *argv[])
 
     memset(&r, 0, sizeof(r));
     r.verbose = 1;
+    r.untrusted = 0;
     memcpy(r.type, "SOL ", 4);
     strcpy(r.user, "admin");
 
@@ -217,7 +219,7 @@ int main(int argc, char *argv[])
 	snprintf(r.pass, sizeof(r.pass), "%s", h);
 
     for (;;) {
-	if (-1 == (c = getopt(argc, argv, "hvqu:p:LC:")))
+	if (-1 == (c = getopt(argc, argv, "hvqu:p:LC:N")))
 	    break;
 	switch (c) {
 	case 'v':
@@ -239,6 +241,10 @@ int main(int argc, char *argv[])
 #if defined(USE_OPENSSL) || defined(USE_GNUTLS)
 	case 'C':
 	    r.cacert = optarg;
+	    break;
+	case 'N':
+	    r.untrusted = 1;
+	    r.cacert = NULL;
 	    break;
 #endif
 

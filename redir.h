@@ -52,6 +52,7 @@ struct redir {
 
     void              *cacert;
     void              *ctx;
+    int               untrusted;
 
     /* callbacks */
     void *cb_data;
